@@ -1,8 +1,8 @@
-import { Inter } from 'next/font/google'
+import { Noto_Sans_KR } from 'next/font/google'
 import './globals.css'
 import './reset.css'
 
-const inter = Inter({ subsets: ['latin'] })
+const font = Noto_Sans_KR({ subsets: ['latin']})
 
 export const metadata = {
   title: 'JWorld',
@@ -12,7 +12,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="ko">
-      <body className={inter.className}>{children}</body>
+      <body className={font.className}>{children}</body>
     </html>
   )
 }
