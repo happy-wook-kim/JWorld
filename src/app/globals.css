@@ -2,3 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  --primary-color: #FFFEE6;
+  --secondary-color: #F4ED6E;
+  --third-color: #E2495B;
+  --forth-color: #C4BA3B;
+}
+
+html {
+  font-size: 14px;
+}
+
+button:not(.header__button) {
+  padding: 1rem 1.8rem;
+  background-color: var(--secondary-color);
+  border-radius: 5px;
+}
+
+input {
+  padding: 1rem 1.4rem;
+  border: 1px solid var(--secondary-color);
+  border-radius: 5px;
+}
