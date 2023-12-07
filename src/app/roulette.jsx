@@ -11,8 +11,11 @@ export default function Roulette () {
     "#e5177b", "#be107f", '#881f7e'
   ]
   let itemCount = 0
-  const radius = window.innerWidth > window.innerHeight ? window.innerHeight / 3.6 : window.innerWidth / 3.6
-  const fontSize = Math.floor(radius / 11)
+  const [isDraw, setDraw] = useState(false)
+  const [radius, setRadius] = useState(0)
+  const [fontSize, setFontSize] = useState(0)
+  // const radius = window.innerWidth > window.innerHeight ? window.innerHeight / 3.6 : window.innerWidth / 3.6
+  // const fontSize = Math.floor(radius / 11)
 
   const [items, setItems] = useState([])  
   const [theWheel, setTheWheel] = useState(undefined);
@@ -49,6 +52,11 @@ export default function Roulette () {
     }
   }
   
+  useEffect(() => {
+    setDraw(true)
+    setRadius(window.innerWidth > window.innerHeight ? window.innerHeight / 3.6 : window.innerWidth / 3.6)
+    setFontSize(Math.floor((window.innerWidth > window.innerHeight ? window.innerHeight / 3.6 : window.innerWidth / 3.6) / 11))
+  }, [])
   useEffect(() => {
     setRoulette()
   }, [items])
@@ -161,7 +169,7 @@ export default function Roulette () {
       <Script src={'Winwheel.min.js'} onLoad={setRoulette}/>
       <div className={styles.game}>
         <section className={styles.sectionBoard}>
-          <canvas id="canvas" width={getSize('w')} height={getSize('h')} className={styles.canvas} ref={canvas}></canvas>
+          {isDraw ? <canvas id="canvas" width={getSize('w')} height={getSize('h')} className={styles.canvas} ref={canvas}></canvas> : <></>}
           {items.length === 0 ? <h3 className={styles.noItemGuide} active={items.length}>아이템을 추가해 주세요</h3> : <></>}
           <div className={styles.arrow}>
             <h1 className={styles.result} ref={resultH1}>{result}</h1>
