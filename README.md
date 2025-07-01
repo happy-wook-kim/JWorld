@@ -7,7 +7,3 @@
 <img width="1280" alt="스크린샷 2025-03-11 오후 4 33 23" src="https://github.com/user-attachments/assets/2d7100c6-a201-4572-b0ba-4d202b46549f" />
 <img width="1288" alt="스크린샷 2025-03-11 오후 4 35 04" src="https://github.com/user-attachments/assets/e49f74a7-7cf4-4138-8454-0eeb7fd8d1a8" />
 
-**!! 주의**
-
-프로토타입이므로 삭제 및 시각적인 효과가 부실합니다.
-반응형 디자인 또한 최적화 되어있지 않습니다.
