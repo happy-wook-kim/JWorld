@@ -1,5 +1,4 @@
-
-import Roulette from "./roulette.jsx";
+import Roulette from "./(components)/roulette.jsx";
 
 export default function Home() {
   return (
