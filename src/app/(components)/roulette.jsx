@@ -41,7 +41,7 @@ export default function Roulette () {
         'fillStyle' : colors[10 - items?.length % 10],
         // 'fillStyle' : `#${Math.round(Math.random() * 0xffffff).toString(16)}`,
         'text' : value.slice(0, 9),
-        'textFontWeight' : value === '준노' ? '800' : '100'
+        'textFontWeight' : '100'
       }
       setItems([form, ...items])
     }else {
@@ -53,9 +53,29 @@ export default function Roulette () {
   }
   
   useEffect(() => {
+    const updateSize = () => {
+      const isMobile = window.innerWidth <= 768
+      
+      let availableWidth, availableHeight
+      if (isMobile) {
+        availableWidth = window.innerWidth * 0.9
+        availableHeight = (window.innerHeight - 200) * 0.8
+      } else {
+        availableWidth = window.innerWidth * 0.35
+        availableHeight = window.innerHeight * 0.7
+      }
+      
+      const calculatedRadius = Math.min(availableWidth, availableHeight) / 2.2
+      
+      setRadius(calculatedRadius)
+      setFontSize(Math.floor(calculatedRadius / 10))
+    }
+    
     setDraw(true)
-    setRadius(window.innerWidth > window.innerHeight ? window.innerHeight / 3.6 : window.innerWidth / 3.6)
-    setFontSize(Math.floor((window.innerWidth > window.innerHeight ? window.innerHeight / 3.6 : window.innerWidth / 3.6) / 11))
+    updateSize()
+    
+    window.addEventListener('resize', updateSize)
+    return () => window.removeEventListener('resize', updateSize)
   }, [])
   useEffect(() => {
     setRoulette()
@@ -71,33 +91,39 @@ export default function Roulette () {
       alert('아이템을 추가해 주세요')
     }
   };
-  
+
+  console.log(window.innerHeight / 10)
   const setRoulette = () => {
     if(items.length > 0) {
-      arrow.current.style.top = `calc(50% - ${radius * 1.15}px)`;
-      arrow.current.style.left = `calc(41% - ${fontSize / 2}px)`;
-      resultH1.current.style.top = `calc(50% - ${radius * 1.3}px)`;
-      resultH1.current.style.width = `${window.innerWidth / 1.8}px`;
+      const heightWeight = window.innerHeight / 10
+      const arrowTop = window.innerWidth > 600 ? heightWeight : 15
+      const resultTop = window.innerWidth > 600 ? 35: 15
+      const boardRect = canvas.current.parentElement.getBoundingClientRect();
+      arrow.current.style.top = `calc(50% - ${radius + arrowTop}px)`;
+      arrow.current.style.left = `calc(50% - 15px)`;
+      resultH1.current.style.top = `calc(50% - ${radius + arrowTop + resultTop}px)`;
+      resultH1.current.style.right = window.innerWidth < 600 ? `5px` : '';
+      resultH1.current.style.width = `100%`;
       setTheWheel(new Winwheel({
-        'outerRadius'     : radius,        // Set outer radius so wheel fits inside the background.
-        'innerRadius'     : 0,         // Make wheel hollow so segments dont go all way to center.
-        'textFontSize'    : items.length > 12 ? fontSize / 1.3 : fontSize * 1.2,         // Set default font size for the segments.
-        'textOrientation' : items.length > 6 ? 'vertical' : 'curved', // Make text vertial so goes down from the outside of wheel.
-        'textAlignment'   : 'outer',    // Align text to outside of wheel.
+        'canvasId'        : 'canvas',
+        'outerRadius'     : radius,
+        'innerRadius'     : 0,
+        'textFontSize'    : items.length > 12 ? fontSize / 1.3 : fontSize * 1.2,
+        'textOrientation' : items.length > 6 ? 'vertical' : 'curved',
+        'textAlignment'   : 'outer',
         'textFontFamily'  : 'NotoSans KR',
         'textFillStyle'   : '#FFF',
-        'numSegments'     : items?.length,         // Specify number of segments.
-        'segments'        : items,           // Define segments including colour and text. font size and text colour overridden on backrupt segments.
-        'animation' :           // Specify the animation to use.
+        'numSegments'     : items?.length,
+        'segments'        : items,
+        'animation' :
         {
           'type'     : 'spinToStop',
           'duration' : 8,
           'spins'    : 5,
-          'callbackFinished' : alertPrize,  // Function to call whent the spinning has stopped.
-          'callbackSound'    : check,   // Called when the tick sound is to be played.
-          // 'soundTrigger'     : 'pin',        // Specify pins are to trigger the sound.
+          'callbackFinished' : alertPrize,
+          'callbackSound'    : check,
         },
-        'pins' :                // Turn pins on.
+        'pins' :
         {
           'number'     : items?.length,
           'fillStyle'  : 'silver',
@@ -134,7 +160,17 @@ export default function Roulette () {
     let size
     if(typeof window !== 'undefined')
     {
-      size = type === 'w' ? window.innerWidth / 1.8 : window.innerHeight / 1.1
+      const isMobile = window.innerWidth <= 768
+      
+      if (type === 'w') {
+        if (isMobile) {
+          size = window.innerWidth
+        } else {
+          size = window.innerWidth * 0.6
+        }
+      } else {
+        size = window.innerHeight - 100
+      }
     }
     return size
   }
@@ -169,7 +205,7 @@ export default function Roulette () {
       <Script src={'Winwheel.min.js'} onLoad={setRoulette}/>
       <div className={styles.game}>
         <section className={styles.sectionBoard}>
-          {isDraw ? <canvas id="canvas" width={getSize('w')} height={getSize('h')} className={styles.canvas} ref={canvas}></canvas> : <></>}
+          {isDraw ? <canvas id="canvas" width={radius * 2.5} height={radius * 2.5} className={styles.canvas} ref={canvas}></canvas> : <></>}
           {items.length === 0 ? <h3 className={styles.noItemGuide} active={items.length}>아이템을 추가해 주세요</h3> : <></>}
           <div className={styles.arrow}>
             <h1 className={styles.result} ref={resultH1}>{result}</h1>
@@ -181,14 +217,9 @@ export default function Roulette () {
         <section className={styles.sectionInput}>
           <div className={styles.inputDiv}>
             <div className={styles.sectionInput__item}>
-              <span active={inputTextGuide.show === false ? 'false' : 'true'} className={styles.inputTextGuide}>{inputTextGuide.text}</span>
               <input id="inputName" placeholder='아이템' type="text" disabled={isRotating} maxLength={8} ref={inputItem} 
                 onChange={handleItemChange} onKeyPress={handleItemKeyPress}/>
               <button className={styles.add} onClick={addItem} disabled={isRotating}>추가</button>
-            </div>
-            <div>
-              {/* <label htmlFor="inputName">메뉴 :</label>
-              <input id="inputName" placeholder='메뉴' type="text"></input> */}
             </div>
           </div>
           <div className={styles.rotateDiv}>

@@ -1,7 +1,7 @@
 import { Noto_Sans_KR } from 'next/font/google'
-import './globals.css'
-import './reset.css'
-import Header from "./header.jsx";
+import './(css)/globals.css'
+import './(css)/reset.css'
+import Header from "./(components)/common/header.jsx";
 
 const font = Noto_Sans_KR({ subsets: ['latin']})
 
