@@ -92,7 +92,6 @@ export default function Roulette () {
     }
   };
 
-  console.log(window.innerHeight / 10)
   const setRoulette = () => {
     if(items.length > 0) {
       const heightWeight = window.innerHeight / 10
